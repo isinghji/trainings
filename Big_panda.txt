@@ -1,0 +1,30 @@
+from jira import JIRA
+import json
+import re
+jac = 'https://jira.expedia.biz/'
+myjira = JIRA(jac, auth=('s-nocjira', 's-nocjira@123'))
+#issue = myjira.issue('SRO-4025')
+#body = "this is test comment"
+#work = myjira.comments('SRO-4025')
+#work = myjira.issue('SRO-4025', fields=None, expand=None)
+#work = myjira.search_issues('key=SRO-3901', startAt=0, maxResults=50, validate_query=True, fields=None, expand=True, json_result=True)
+#work = myjira.search_users("isingh", startAt=0, maxResults=50, includeActive=True, includeInactive=False)
+#work = myjira.project_components("34503")
+#work = myjira.sprints("34503", extended=False, startAt=0, maxResults=50, state=None)
+#work1 = work.get("issues")
+#print(work1[0].get('key'))
+#print(work1[0].get('fields').get('assignee').get("displayName"))
+#print(work1[0].get('fields').get('summary'))
+#print(work1[0].get('fields').get('status').get('name'))
+#i = len(work1[0].get('fields').get('customfield_14002'))
+#mylist = (work1[0].get('fields').get('customfield_14002')[0])
+#list2 = re.split(",", mylist, 20)
+#for value in list2:
+#work = myjira.assign_issue(self, issue, assignee)
+#work = myjira.worklogs("SRO-3795")
+#work = myjira.add_watcher("SRO-3795", "amverma")
+#work = myjira.fields("SRO-3795")
+print(work)
+
+------------------------- BP testing-------------
+

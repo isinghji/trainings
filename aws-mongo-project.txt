@@ -1,0 +1,78 @@
+vpc id - vpc-929cf8fa  default
+
+security group id - sg-4293bb29
+
+us-east-2
+
+
+AMI - ami-0520e698dd500b1d1
+
+type -  t2.micro
+
+
+IAM - Tier2
+
+
+
+import boto3
+import paramiko
+client = boto3.client('ec2', region_name='us-east-2')
+response = client.run_instances(
+    ImageId='ami-0520e698dd500b1d1',
+    InstanceType='t2.micro',
+    MaxCount=1,
+    MinCount=1,
+    Monitoring={
+        'Enabled': False
+    },
+    SecurityGroupIds=['sg-9d4dc8fa'],
+    )
+
+Instance_name = response['Instances'][0]['InstanceId']
+Instance_public_name = ec2.describe_instances(InstanceIds=[Instance_name])['Reservations'][0]['Instances'][0]['PublicDnsName']
+
+
+
+ssh_client=paramiko.SSHClient()
+ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+ssh_client.connect(hostname=Instance_public_name,username='ec2-user',password='New@1205', key_filename='C://Users//isingh//Downloads//ishwar-dev.pem')
+stdin, stdout, stderr = ssh_client.exec_command('sudo service sendmail start')
+print (stdout.readlines())
+
+ssh_client.exec_command('sudo mkdir /home/ec2-user/mongodb && sudo chmod 777 ./mongodb')
+ssh_client.exec_command('cd ./mongodb && sudo wget https://repo.mongodb.org/yum/amazon/2013.03/mongodb-org/4.2/x86_64/RPMS/mongodb-org-server-4.2.3-1.amzn1.x86_64.rpm && sudo chmod 777 mongodb-org-server-4.2.3-1.amzn1.x86_64.rpm')
+ssh_client.exec_command('cd ./mongodb && sudo wget https://repo.mongodb.org/yum/amazon/2013.03/mongodb-org/4.2/x86_64/RPMS/mongodb-org-mongos-4.2.3-1.amzn1.x86_64.rpm && sudo chmod 777 mongodb-org-mongos-4.2.3-1.amzn1.x86_64.rpm')
+ssh_client.exec_command('cd ./mongodb && sudo wget https://repo.mongodb.org/yum/amazon/2013.03/mongodb-org/4.2/x86_64/RPMS/mongodb-org-shell-4.2.3-1.amzn1.x86_64.rpm && sudo chmod 777 mongodb-org-shell-4.2.3-1.amzn1.x86_64.rpm')
+ssh_client.exec_command('cd ./mongodb && sudo yum -y install mongodb-org-server-4.2.3-1.amzn1.x86_64.rpm && sudo yum -y install mongodb-org-mongos-4.2.3-1.amzn1.x86_64.rpm && sudo yum -y install mongodb-org-shell-4.2.3-1.amzn1.x86_64.rpm && sudo service mongod start')
+
+
+
+
+
+
+
+--------- instance creatino output -----------------
+
+{'Groups': [], 'Instances': [{'AmiLaunchIndex': 0, 'ImageId': 'ami-0520e698dd500b1d1', 'InstanceId': 'i-029abcb74c9116bc7', 'InstanceType': 't2.micro', 'LaunchTime': datetime.datetime(2020, 2, 3, 5, 59, 53, tzinfo=tzutc()), 'Monitoring': {'State': 'disabled'}, 'Placement': {'AvailabilityZone': 'us-east-2c', 'GroupName': '', 'Tenancy': 'default'}, 'PrivateDnsName': 'ip-172-31-38-4.us-east-2.compute.internal', 'PrivateIpAddress': '172.31.38.4', 'ProductCodes': [], 'PublicDnsName': '', 'State': {'Code': 0, 'Name': 'pending'}, 'StateTransitionReason': '', 'SubnetId': 'subnet-70989f3d', 'VpcId': 'vpc-929cf8fa', 'Architecture': 'x86_64', 'BlockDeviceMappings': [], 'ClientToken': '', 'EbsOptimized': False, 'Hypervisor': 'xen', 'NetworkInterfaces': [{'Attachment': {'AttachTime': datetime.datetime(2020, 2, 3, 5, 59, 53, tzinfo=tzutc()), 'AttachmentId': 'eni-attach-0d1892355328d1a83', 'DeleteOnTermination': True, 'DeviceIndex': 0, 'Status': 'attaching'}, 'Description': '', 'Groups': [{'GroupName': 'default', 'GroupId': 'sg-4293bb29'}], 'Ipv6Addresses': [], 'MacAddress': '0a:fd:0f:26:d0:38', 'NetworkInterfaceId': 'eni-0556141926c475638', 'OwnerId': '154537056146', 'PrivateDnsName': 'ip-172-31-38-4.us-east-2.compute.internal', 'PrivateIpAddress': '172.31.38.4', 'PrivateIpAddresses': [{'Primary': True, 'PrivateDnsName': 'ip-172-31-38-4.us-east-2.compute.internal', 'PrivateIpAddress': '172.31.38.4'}], 'SourceDestCheck': True, 'Status': 'in-use', 'SubnetId': 'subnet-70989f3d', 'VpcId': 'vpc-929cf8fa', 'InterfaceType': 'interface'}], 'RootDeviceName': '/dev/sda1', 'RootDeviceType': 'ebs', 'SecurityGroups': [{'GroupName': 'default', 'GroupId': 'sg-4293bb29'}], 'SourceDestCheck': True, 'StateReason': {'Code': 'pending', 'Message': 'pending'}, 'VirtualizationType': 'hvm', 'CpuOptions': {'CoreCount': 1, 'ThreadsPerCore': 1}, 'CapacityReservationSpecification': {'CapacityReservationPreference': 'open'}, 'MetadataOptions': {'State': 'pending', 'HttpTokens': 'optional', 'HttpPutResponseHopLimit': 1, 'HttpEndpoint': 'enabled'}}], 'OwnerId': '154537056146', 'ReservationId': 'r-0b3bac59b8896fe11', 'ResponseMetadata': {'RequestId': '23d823d8-096a-4fa8-a1e5-71b9d0ac6eb3', 'HTTPStatusCode': 200, 'HTTPHeaders': {'content-type': 'text/xml;charset=UTF-8', 'content-length': '4693', 'vary': 'accept-encoding', 'date': 'Mon, 03 Feb 2020 05:59:52 GMT', 'server': 'AmazonEC2'}, 'RetryAttempts': 0}}
+
+
+
+
+
+ssh_client.connect(hostname='ec2-52-14-241-71.us-east-2.compute.amazonaws.com',username='ec2-user',password='New@1205', key_filename='C:\Users\isingh\Downloads\ishwar-dev.ppk')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. create Ec2 instance and change rules in default vpc to all incoming and outgoing traffic - allowed for all
